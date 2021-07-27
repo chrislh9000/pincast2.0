@@ -1,27 +1,13 @@
 import "../assets/css/App.css";
 
 import React from "react";
-import {
-  HashRouter as Router,
-  Switch,
-  Route,
-  Link,
-  Redirect,
-} from "react-router-dom";
-import Navbar from "./Navbar";
-import Pinpage from "./Pinpage";
-import Discussion from "./Discussion";
-import Pin from "./Pin";
-import Sidebar from "./Sidebar";
-import About from "./About";
+import { HashRouter as Router, Route, Redirect } from "react-router-dom";
 import Register from "./Register";
 import Userlist from "./Userlist";
 import Login from "./Login";
 import ReactPlayer from "react-player";
-import podcast from "../assets/podcasts/planet_money.mp3";
 import Listening from "./Listening";
 import Reflect from "./Reflect";
-import fs from "fs";
 import Home from "./Home";
 
 import { AnimatedSwitch } from "react-router-transition";
@@ -37,7 +23,6 @@ class App extends React.Component {
       loggedIn: false,
       episodeIndex: 0,
       user: { username: " " },
-      url: podcast,
       episode: {
         _id: "5ff051084158640e1d924e76",
         transcript: "5fe345e13ed52c79138e951d",
@@ -55,8 +40,6 @@ class App extends React.Component {
       episodeIndex: 0,
       podcast: {},
       played: 0,
-      playing: false,
-      controls: false,
       light: false,
       volume: 0.8,
       muted: false,
@@ -64,12 +47,11 @@ class App extends React.Component {
       duration: 0,
       playbackRate: 1.0,
       loop: false,
-      progress: 0,
     };
   }
 
   handlePlayPause = () => {
-    this.setState({ playing: !this.state.playing });
+    this.setState({ playpause: !this.state.playpause });
   };
 
   handleVolumeChange = (e) => {
@@ -78,12 +60,12 @@ class App extends React.Component {
 
   handlePlay = () => {
     console.log("onPlay");
-    this.setState({ playing: true });
+    this.setState({ playpause: true });
   };
 
   handlePause = () => {
     console.log("onPause");
-    this.setState({ playing: false });
+    this.setState({ playpause: false });
   };
 
   handleDuration = (duration) => {
@@ -156,7 +138,7 @@ class App extends React.Component {
     } else {
       this.handlePlay();
     }
-    this.setState({ playpause: !this.state.playing });
+    this.setState({ playpause: !this.state.playpause });
     // this.state.playpause
     //   ? this.props.message("PAUSED")
     //   : this.props.message("NOW PLAYING");
@@ -187,7 +169,7 @@ class App extends React.Component {
   setCurrTime = () => {
     if (this.player) {
       var pin = this.player.getCurrentTime();
-      console.log("CURRENT TIME!!!!", pin)
+      console.log("CURRENT TIME!!!!", pin);
       this.handlePin(pin);
       return pin;
     }
@@ -350,31 +332,23 @@ class App extends React.Component {
 
   seekToTime = (time) => {
     if (this.state.pinTime > 0) {
-      console.log("SEEK TO TIME BEING CALLED!!! at time", time)
+      console.log("SEEK TO TIME BEING CALLED!!! at time", time);
       // this.setState({ pinTime: time });
-      this.player.seekTo(time, 'seconds');
-      console.log("SEEK TO TIME BEING CALLED!!!", this.player.getInternalPlayer())
+      this.player.seekTo(time, "seconds");
+      console.log(
+        "SEEK TO TIME BEING CALLED!!!",
+        this.player.getInternalPlayer()
+      );
     }
   };
 
-  // componentDidUpdate(prevProps) {
-  //   console.log("PREV PROPS", prevProps)
-  //   // console.log("componentdidupdate       ==========", this.props.pinTime);
-  //   // this.interval = setInterval(
-  //   //   () => this.handlePin(this.player.getCurrentTime()),
-  //   //   1000
-  //   // );
-  //   // this.handlePin(this.player.getCurrentTime())
-  //   // console.log(this.state.episodeIndex);
-  // }
-
   ref = (player) => {
-    console.log("PREV PLAYER", player)
+    console.log("PREV PLAYER", player);
     this.player = player;
   };
 
   handlePin = (pin) => {
-    console.log("PIN", pin)
+    console.log("PIN", pin);
     this.setState({
       pinTime: pin,
     });
@@ -405,7 +379,7 @@ it updates episode-specific state elements passed into the discussion component
           width="400px"
           height="0px"
           // playing={this.state.playpause}
-          playing={this.state.playing}
+          playing={this.state.playpause}
           controls={false}
           onProgress={this.handleProgress}
         />
@@ -417,88 +391,6 @@ it updates episode-specific state elements passed into the discussion component
           atActive={{ opacity: 1 }}
           className="switch-wrapper"
         >
-          {/* <Route path="/pins_page">
-            <Pinpage
-              handlePin={this.handlePin}
-              handlePlayorpause={this.handlePlayorpause}
-              fastRewind={this.fastRewind}
-              fastForward={this.fastForward}
-              seekToTime={this.seekToTime}
-              playpause={this.state.playpause}
-              setCurrTime={this.setCurrTime}
-              user={this.state.user}
-              episode={this.state.episode}
-              audioDuration={100}
-              pinTime={this.state.pinTime}
-              reflectEpisode={this.state.reflectEpisode}
-              reflectPins={this.state.reflectPins}
-              episodeIndex={this.state.episodeIndex}
-              imgURL={this.state.podcast.imageUrl}
-            />
-          </Route> */}
-
-          {/* <Route path="/about">
-            <About
-              pinTime={this.state.pinTime}
-              handlePin={this.handlePin}
-              handlePlayorpause={this.handlePlayorpause}
-              fastRewind={this.fastRewind}
-              fastForward={this.fastForward}
-              seekToTime={this.seekToTime}
-              playpause={this.state.playpause}
-              setCurrTime={this.setCurrTime}
-              user={this.state.user}
-              episode={this.state.episode}
-              login={this.login}
-              updateDiscussionEpisode={this.updateDiscussionEpisode}
-              updateReflectionEpisode={this.updateReflectionEpisode}
-              updateIndex={this.updateEpisodeIndex}
-              episodeIndex={this.state.episodeIndex}
-              open={this.state.open}
-              handleSlide={this.handleSlide}
-              played={this.state.played}
-              episode={this.state.episode}
-              playing={this.state.playing}
-              controls={this.state.controls}
-              light={this.state.light}
-              volume={this.state.volume}
-              muted={this.state.muted}
-              loaded={this.state.loaded}
-              duration={this.state.duration}
-              playbackRate={this.state.playbackRate}
-              loop={this.state.loop}
-              handlePlayPause={this.handlePlayPause}
-              handleVolumeChange={this.handleVolumeChange}
-              handlePlay={this.handlePlay}
-              handlePause={this.handlePause}
-              handleDuration={this.handleDuration}
-              handleSeekTo={this.handleSeekTo}
-              handleSeekChange={this.handleSeekChange}
-              handleSeekMouseDown={this.handleSeekMouseDown}
-              handleSeekMouseUp={this.handleSeekMouseUp}
-            />
-          </Route> */}
-
-          {/* <Route path="/users">
-            <Discussion
-              pinTime={this.state.pinTime}
-              handlePin={this.handlePin}
-              handlePlayorpause={this.handlePlayorpause}
-              fastRewind={this.fastRewind}
-              fastForward={this.fastForward}
-              seekToTime={this.seekToTime}
-              playpause={this.state.playpause}
-              setCurrTime={this.setCurrTime}
-              user={this.state.user}
-              episode={this.state.episode}
-              login={this.login}
-              discussPins={this.state.discussPins}
-              getUserFromStorage={this.getUserFromStorage}
-              episodeIndex={this.state.episodeIndex}
-              imgURL={this.state.podcast.imageUrl}
-            />
-          </Route> */}
-
           <Route path="/register">
             <Register
               user={this.state.user}
@@ -536,48 +428,7 @@ it updates episode-specific state elements passed into the discussion component
               friendUser={this.friendUser}
             />
           </Route>
-          {/* <Route path="/home_page">
-            <Home
-              pinTime={this.state.pinTime}
-              handlePin={this.handlePin}
-              handlePlayorpause={this.handlePlayorpause}
-              fastRewind={this.fastRewind}
-              fastForward={this.fastForward}
-              seekToTime={this.seekToTime}
-              playpause={this.state.playpause}
-              setCurrTime={this.setCurrTime}
-              user={this.state.user}
-              episode={this.state.episode}
-              login={this.login}
-              updateDiscussionEpisode={this.updateDiscussionEpisode}
-              updateReflectionEpisode={this.updateReflectionEpisode}
-              updateIndex={this.updateEpisodeIndex}
-              episodeIndex={this.state.episodeIndex}
-              open={this.state.open}
-              handleSlide={this.handleSlide}
-              played={this.state.played}
-              episode={this.state.episode}
-              playing={this.state.playing}
-              controls={this.state.controls}
-              light={this.state.light}
-              volume={this.state.volume}
-              muted={this.state.muted}
-              loaded={this.state.loaded}
-              duration={this.state.duration}
-              playbackRate={this.state.playbackRate}
-              loop={this.state.loop}
-              handlePlayPause={this.handlePlayPause}
-              handleVolumeChange={this.handleVolumeChange}
-              handlePlay={this.handlePlay}
-              handlePause={this.handlePause}
-              handleDuration={this.handleDuration}
-              handleSeekTo={this.handleSeekTo}
-              handleSeekChange={this.handleSeekChange}
-              handleSeekMouseDown={this.handleSeekMouseDown}
-              handleSeekMouseUp={this.handleSeekMouseUp}
-              updateProgress={this.updateProgress}
-            />
-          </Route> */}
+
           <Route path="/listening">
             <Listening
               pinTime={this.state.pinTime}
@@ -619,7 +470,6 @@ it updates episode-specific state elements passed into the discussion component
               episodeIndex={this.state.episodeIndex}
               imgURL={this.state.podcast.imageUrl}
               podcast={this.state.podcast}
-              progress={this.state.progress}
               logout={this.logout}
               played={this.state.played}
               handleSeekChange={this.handleSeekChange}
@@ -630,50 +480,6 @@ it updates episode-specific state elements passed into the discussion component
           </Route>
 
           <Route path="/">
-            {/* <ReactPlayer
-          ref={this.ref}
-          url={podcast}
-          width="400px"
-          height="0px"
-          playing={this.state.playpause}
-          controls={false}
-          /> */}
-            {/* <Discussion
-              pinTime={this.state.pinTime}
-              handlePin={this.handlePin}
-              handlePlayorpause={this.handlePlayorpause}
-              fastRewind={this.fastRewind}
-              fastForward={this.fastForward}
-              seekToTime={this.seekToTime}
-              playpause={this.state.playpause}
-              setCurrTime={this.setCurrTime}
-              user={this.state.user}
-              episode={this.state.episode}
-              login={this.login}
-              discussPins={this.state.discussPins}
-              getUserFromStorage={this.getUserFromStorage}
-              episodeIndex={this.state.episodeIndex}
-              imgURL={this.state.podcast.imageUrl}
-            /> */}
-            {/* <About
-                pinTime={this.state.pinTime}
-                handlePin={this.handlePin}
-                handlePlayorpause={this.handlePlayorpause}
-                fastRewind={this.fastRewind}
-                fastForward={this.fastForward}
-                seekToTime={this.seekToTime}
-                playpause={this.state.playpause}
-                setCurrTime={this.setCurrTime}
-                user={this.state.user}
-                episode={this.state.episode}
-                login={this.login}
-                updateDiscussionEpisode={this.updateDiscussionEpisode}
-                updateReflectionEpisode={this.updateReflectionEpisode}
-                updateIndex={this.updateEpisodeIndex}
-                episodeIndex={this.state.episodeIndex}
-                open={this.state.open}
-                handleSlide={this.handleSlide}
-              /> */}
             <Home
               imgURL={this.state.podcast.imageUrl}
               pinTime={this.state.pinTime}
@@ -695,8 +501,6 @@ it updates episode-specific state elements passed into the discussion component
               handleSlide={this.handleSlide}
               played={this.state.played}
               episode={this.state.episode}
-              playing={this.state.playing}
-              controls={this.state.controls}
               light={this.state.light}
               volume={this.state.volume}
               muted={this.state.muted}
@@ -729,8 +533,4 @@ export default App;
 
 function Users() {
   return <h2>Users</h2>;
-}
-
-function Podcast() {
-  return <h1>ello</h1>;
 }

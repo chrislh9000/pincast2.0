@@ -15,16 +15,6 @@ class PlayBar extends React.Component {
     super(props);
     this.state = {
       imgURL: this.props.imgURL,
-      // played: 0,
-      // playing: false,
-      // controls: false,
-      // light: false,
-      // volume: 0.8,
-      // muted: false,
-      // loaded: 0,
-      // duration: 0,
-      // playbackRate: 1.0,
-      // loop: false,
       reflectPins: this.props.reflectPins,
       friendPins: [],
       seeFriends: false,
@@ -60,7 +50,10 @@ class PlayBar extends React.Component {
       .toString()
       .padStart(2, "0");
     secs = secs % 60;
-    let str = mins.toString().concat(":").concat(secs.toString().padStart(2,"0"));
+    let str = mins
+      .toString()
+      .concat(":")
+      .concat(secs.toString().padStart(2, "0"));
 
     if (mins == "NaN") {
       str = "00:00";

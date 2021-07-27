@@ -33,7 +33,7 @@ export default class Example extends React.PureComponent {
       pins: [],
       searchList: [],
       shouldRenderEpisodes: [],
-      shouldRenderPodcasts: []
+      shouldRenderPodcasts: [],
     };
   }
 
@@ -50,7 +50,7 @@ export default class Example extends React.PureComponent {
   // ###################################################################################################
 
   appendTogether = () => {
-    console.log(this.state.episodes)
+    console.log(this.state.episodes);
     let tempList = [];
 
     for (var i = 0; i < this.state.episodes.length; i++) {
@@ -67,8 +67,8 @@ export default class Example extends React.PureComponent {
     this.setState({ searchList: tempList });
   };
 
-  filterFunction = userInput => {
-    let filteredNames = this.state.searchList.map(x => {
+  filterFunction = (userInput) => {
+    let filteredNames = this.state.searchList.map((x) => {
       return x.includes(userInput);
     });
     console.log(this.state.searchList);
@@ -84,21 +84,21 @@ export default class Example extends React.PureComponent {
 
     this.setState({
       shouldRenderEpisodes: tempList,
-      shouldRenderPodcasts: tempPod
+      shouldRenderPodcasts: tempPod,
     });
   };
 
   initializeShouldRenderPins = () => {
     this.setState({
       shouldRenderEpisodes: this.state.episodes,
-      shouldRenderPodcasts: this.state.podcasts
+      shouldRenderPodcasts: this.state.podcasts,
     });
   };
   // ###################################################################################################
   // End of Searching helpers
   // ###################################################################################################
 
-  componentDidMount = e => {
+  componentDidMount = (e) => {
     // add the user id to the end of the request url
 
     if (localStorage.getItem("home")) {
@@ -110,7 +110,7 @@ export default class Example extends React.PureComponent {
         pins: JSON.parse(stateObj.pins),
         searchList: JSON.parse(stateObj.searchList),
         shouldRenderEpisodes: JSON.parse(stateObj.shouldRenderEpisodes),
-        shouldRenderPodcasts: JSON.parse(stateObj.shouldRenderPodcasts)
+        shouldRenderPodcasts: JSON.parse(stateObj.shouldRenderPodcasts),
       });
     } else {
       const url = "http://localhost:5000/podcasts/loadUserEpisodes/".concat(
@@ -125,8 +125,8 @@ export default class Example extends React.PureComponent {
           "Content-Type": "application/json",
         },
       })
-        .then(res => res.json())
-        .then(json => {
+        .then((res) => res.json())
+        .then((json) => {
           // console.log(json.episodes);
           // console.log(json.podcasts);
           if (json.episodes) {
@@ -134,7 +134,7 @@ export default class Example extends React.PureComponent {
               {
                 episodes: json.episodes,
                 podcasts: json.podcasts,
-                progresses: json.progresses
+                progresses: json.progresses,
               },
               () => {
                 this.appendTogether();
@@ -161,12 +161,12 @@ export default class Example extends React.PureComponent {
             );
           }
           // console.log(promises);
-          Promise.all(promises).then(values => {
+          Promise.all(promises).then((values) => {
             let pinsarray = [];
             for (let i = 0; i < json.episodes.length; i++) {
               pinsarray.push(values[i].json());
             }
-            Promise.all(pinsarray).then(pinobjects => {
+            Promise.all(pinsarray).then((pinobjects) => {
               // console.log("============pinobjects========", pinobjects);
               this.setState({
                 pins: pinobjects,
@@ -181,7 +181,7 @@ export default class Example extends React.PureComponent {
     this.interval = setInterval(() => this.props.setCurrTime(), 1000);
   };
 
-  componentDidUpdate = e => {
+  componentDidUpdate = (e) => {
     // console.log(this.props.episodeIndex);
     // console.log(this.state.pins);
     // console.log("=======proggresses========", this.state.progresses);
@@ -195,8 +195,12 @@ export default class Example extends React.PureComponent {
       currState.progresses = JSON.stringify(currState.progresses);
       currState.pins = JSON.stringify(currState.pins);
       currState.searchList = JSON.stringify(currState.searchList);
-      currState.shouldRenderEpisodes = JSON.stringify(currState.shouldRenderEpisodes);
-      currState.shouldRenderPodcasts = JSON.stringify(currState.shouldRenderPodcasts);
+      currState.shouldRenderEpisodes = JSON.stringify(
+        currState.shouldRenderEpisodes
+      );
+      currState.shouldRenderPodcasts = JSON.stringify(
+        currState.shouldRenderPodcasts
+      );
       localStorage.setItem("home", JSON.stringify(currState));
     }
   };
@@ -275,7 +279,7 @@ export default class Example extends React.PureComponent {
                 paddingLeft: "1%",
                 marginRight: "10%",
                 height: "70vh",
-                overflow: "hidden scroll"
+                overflow: "hidden scroll",
               }}
             >
               {this.state.episodes.length > 0 && this.state.pins.length > 1
@@ -471,7 +475,6 @@ export default class Example extends React.PureComponent {
           imgURL={this.props.imgURL}
           played={this.props.played}
           playing={this.props.playing}
-          controls={this.props.controls}
           light={this.props.light}
           volume={this.props.volume}
           muted={this.props.muted}
