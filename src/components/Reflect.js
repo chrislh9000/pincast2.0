@@ -562,7 +562,6 @@ changePinFrontend changes the content of the pin on the frontend when the length
   // };
 
   render() {
-    // console.log("Progress=====", this.props.progress);
     // console.log("Episode duration=====", this.props.reflectEpisode.duration);
     return (
       <Container fluid className="discussion_background pl-0 pr-0">
