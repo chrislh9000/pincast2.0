@@ -8,6 +8,12 @@ const Episode = models.Episode;
 const UserEpisode = models.UserEpisode;
 const GcloudResponse = models.GcloudResponse;
 
+/*
+Note: All of these routes are admin use only except for loadUserEpisodes
+
+*/
+
+
 router.post("/createPodcast", (req, res) => {
   // create a new Pin with timestamp, text, User, and Podcast
   const newPodcast = new Podcast({
@@ -34,7 +40,6 @@ router.post("/createEpisode", (req, res) => {
   // create a new Pin with timestamp, text, User, and Podcast
   let podcastId = "";
   let transcript;
-  console.log("calling create episode")
   Podcast.findOne({
     title: req.body.podcast_title,
     author: req.body.podcast_author,

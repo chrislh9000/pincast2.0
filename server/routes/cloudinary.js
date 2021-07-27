@@ -8,10 +8,16 @@ import http from 'http';
 import fs from 'fs';
 import models from '../models.js';
 
+
+// ===== NOTE =====  THIS IS FOR STREAMING PODCASTS AND UPLOADING PODCASTS IN CLOUDINARY WHICH HAS NOT BEEN DONE // 
+
+
+// configuring cloudinary upload path
+
 cloudinary.config({
   cloud_name: 'pincast',
   api_key: "694445253517932",
-  api_secret: "E5veH5IB1VNYkxp3jxEeCM34LCA",
+  api_secret: "E5veH5IB1VNYkxp3jxEeCM34LCA", // TO DO: update to an environmental variable
 });
 
 router.get('/uploadPodcast', (req, res) => {
