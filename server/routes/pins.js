@@ -5,6 +5,9 @@ const User = models.User;
 const Pin = models.Pin;
 
 // TODO: add episode id
+
+// ====== CREATE PIN ROUTE =========
+
 router.post("/createPin", (req, res) => {
   // create a new Pin with timestamp, text, User, and Podcast
   const newPin = new Pin({
@@ -20,11 +23,9 @@ router.post("/createPin", (req, res) => {
   newPin
     .save()
     .then((resp) => {
-      // TO DO: update User to add pin
+      // Update the user model, adding the pins id to the list of the User's pins
       User.findByIdAndUpdate(req.body.id, { $push: { pins: resp._id } })
         .then((resp) => {
-          console.log("=====PIN SAVED to USER =========");
-          console.log("=====PIN SAVED to USER RESP=========", resp);
           res.status(200).json({
             success: true,
             message: newPin,
@@ -32,7 +33,7 @@ router.post("/createPin", (req, res) => {
           });
         })
         .catch((err) => {
-          console.log("======= NO USER FOUND========");
+          console.log("error updating user model: User likely not found")
           res.status(500).json(err);
         });
     })
@@ -41,7 +42,10 @@ router.post("/createPin", (req, res) => {
     });
 });
 
+// ====== DELETE PIN ROUTE =========
+
 router.post("/deletePin", (req, res) => {
+  // query to find the pin in question
   const query = {
     ccId: req.body.ccId,
     user: req.body.id,
@@ -57,16 +61,16 @@ router.post("/deletePin", (req, res) => {
       });
     })
     .catch((err) => {
+      // Pin delete failed
+      console.log("error finding the Pin to delete")
       res.status(500).json(err);
     });
 });
 
+// ====== ADD A NOTE TO A PIN =========
+
 //get episode
 router.post("/addNote", (req, res) => {
-  console.log(req.body.note);
-  console.log(req.body.episode);
-  console.log(req.body.id);
-  console.log(req.body.ccId);
   Pin.findOneAndUpdate(
     {
       ccId: req.body.ccId,
@@ -76,7 +80,7 @@ router.post("/addNote", (req, res) => {
     { note: req.body.note }
   )
     .then((resp) => {
-      console.log("RESP========", resp);
+      // Pin successfully updated in the database
       res.status(200).json({
         success: true,
         message: "added note",
@@ -87,13 +91,13 @@ router.post("/addNote", (req, res) => {
     });
 });
 
+// ====== ROUTE TO RENDER FRIEND PINS ========= TO DO: THIS SHOULD PROBABLY BE A GET ROUTE
 router.post("/friendPin", (req, res) => {
   Pin.find({
     $and: [{ user: { $in: req.body.friends } }, { episode: req.body.episode }],
   })
     .populate("user")
     .then((resp) => {
-      console.log("====QUERY FRO FRIENDS PINS WORKED====");
       res.status(200).json({
         success: true,
         message: resp,
@@ -106,19 +110,21 @@ router.post("/friendPin", (req, res) => {
 
 // ====== EDIT PINS =======
 router.post("/editPin", (req, res) => {
+  // query to find Pin to edit in database
   const query = {
     ccId: req.body.ccId,
     user: req.body.id,
     episode: req.body.episode,
   };
-  const newTime = {
+  // new Pin information to update
+  const newPin = {
     text: req.body.text,
     startTime: req.body.startTime,
     endTime: req.body.endTime,
     ccId: req.body.newCcId,
   };
-
-  Pin.findOneAndUpdate(query, newTime)
+  // update the Pin stuff
+  Pin.findOneAndUpdate(query, newPin)
     .then((resp) => {
       res.status(200).json({
         success: true,
@@ -130,7 +136,9 @@ router.post("/editPin", (req, res) => {
     });
 });
 
+// ====== FAVORITE PINS PINS =======
 router.post("/pinFavorite", (req, res) => {
+  // query to find Pin to edit in database
   const query = {
     ccId: req.body.ccId,
     user: req.body.user_id,
@@ -139,7 +147,6 @@ router.post("/pinFavorite", (req, res) => {
   const fav = {
     favorited: req.body.favorite,
   };
-
   Pin.findOneAndUpdate(query, fav)
     .then((resp) => {
       res.status(200).json({
@@ -152,14 +159,11 @@ router.post("/pinFavorite", (req, res) => {
     });
 });
 
-// TODO: render by episode
+// ====== RENDER PINS BY EPISODE=======
 router.post("/renderPins", (req, res) => {
-  console.log("=======RENDER PINS USER ID=======", req.body.user_id);
-  console.log("=======RENDER PINS EPISODE ID=======", req.body.episode);
+  // find all pins by the user and by episode
   Pin.find({ user: req.body.user_id, episode: req.body.episode }).then(
     (resp) => {
-      console.log("=====RESP=====", resp._id);
-      console.log("=====RESP=====", Object.keys(resp));
       res.status(200).json({
         success: true,
         message: resp,
@@ -169,8 +173,9 @@ router.post("/renderPins", (req, res) => {
   );
 });
 
-// ===== PIN CLEARING ROUTES =========
+// ===== ADMIN USE: PIN CLEARING ROUTES =========
 router.get("/clearUserPins/:userid", (req, res) => {
+  // update user model to clear all pins
   User.findByIdAndUpdate(
     req.params.userid,
     { $set: { pins: [] } },

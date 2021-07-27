@@ -7,6 +7,8 @@ import models from "../models.js";
 const router = express.Router();
 const GcloudResponse = models.GcloudResponse;
 
+// ===== ADMIN USE: upload json file to the database (no longer using this as we manually upload on Mongodb)
+
 router.get("/upload", (req, res) => {
   // create new Transcript
   fs.readFile(
@@ -25,16 +27,16 @@ router.get("/upload", (req, res) => {
           response: resp,
         });
         newResponse
-          .save()
-          .then(() => {
-            res.status(200).json({
-              success: true,
-              message: "transcript saved successfully",
-            });
-          })
-          .catch((err) => {
-            res.status(500).json(err);
+        .save()
+        .then(() => {
+          res.status(200).json({
+            success: true,
+            message: "transcript saved successfully",
           });
+        })
+        .catch((err) => {
+          res.status(500).json(err);
+        });
       } catch (err) {
         console.log("Error parsing JSON string:", err);
       }
@@ -42,39 +44,34 @@ router.get("/upload", (req, res) => {
   );
 });
 
+// ===== Loading the transcript into the listening page
+
 router.get("/loadTranscript/:id", (req, res) => {
-  console.log("HEYYY");
   GcloudResponse.findById(req.params.id)
-    .then((resp) => {
-      if (!resp) {
-        console.log("===NO RESPONSE===");
-        res.status(404).json({
-          success: false,
-          message: "no gcloudresponse found",
-        });
-      } else {
-        console.log("=========STARTING TIME==========", Date.now());
-        // init ccComps array
-        let trans = JSON.parse(JSON.stringify(resp))["response"]["response"][
-          "results"
-        ];
-        // console.log('TRANS LENGTH=======', trans)
-        // console.log('TRANS IT=======', trans[0]['alternatives'][0]['words'].length)
-        // console.log('TRANS START TIMES=======', trans[0]['alternatives'][0]['words'][0]['startTime'])
-        // console.log("=====TRANS LENGTH=======", trans['message']['response']['results'].length)
-        let ccComps = [];
-        let ccObj = {};
-        //loop through each word in the response
-        let ccSentence = "";
-        // counter for the CC_id
-        let ccCounter = 0;
-        const start = Date.now();
-        console.log("starting timer...");
-        for (let i = 0; i < trans.length - 1; i++) {
-          for (
-            let j = 0; j < trans[i]["alternatives"][0]["words"].length;j++) {
+  .then((resp) => {
+    if (!resp) {
+      res.status(404).json({
+        success: false,
+        message: "no gcloudresponse found",
+      });
+    } else {
+      // get ready to parse the json object
+      let trans = JSON.parse(JSON.stringify(resp))["response"]["response"][
+        "results"
+      ];
+      // init ccComps array
+      let ccComps = [];
+      let ccObj = {};
+      //loop through each word in the response
+      let ccSentence = "";
+      // counter for the CC_id
+      let ccCounter = 0;
+      for (let i = 0; i < trans.length - 1; i++) {
+        for (
+          let j = 0; j < trans[i]["alternatives"][0]["words"].length;j++) {
             let word = trans[i]["alternatives"][0]["words"][j]["word"];
             if (
+              // if the last character in the word is a sentence-ending punctuation mark, break it off
               word[word.length - 1] == "." ||
               word[word.length - 1] == "?" ||
               word[word.length - 1] == "!"
@@ -82,21 +79,21 @@ router.get("/loadTranscript/:id", (req, res) => {
               // if there's only one word in the sentence, then make sure to add the timestamp
               if (ccSentence.length == 0) {
                 let timeStampstr =
-                  trans[i]["alternatives"][0]["words"][j]["startTime"];
+                trans[i]["alternatives"][0]["words"][j]["startTime"];
                 ccObj["startTime"] =
-                  Number(
-                    timeStampstr.substring(
-                      timeStampstr,
-                      timeStampstr.length - 1
-                    )
-                  ) + 0.0001;
+                Number(
+                  timeStampstr.substring(
+                    timeStampstr,
+                    timeStampstr.length - 1
+                  )
+                ) + 0.0001;
                 ccObj["endTime"] =
-                  Number(
-                    timeStampstr.substring(
-                      timeStampstr,
-                      timeStampstr.length - 1
-                    )
-                  ) + 0.0001;
+                Number(
+                  timeStampstr.substring(
+                    timeStampstr,
+                    timeStampstr.length - 1
+                  )
+                ) + 0.0001;
               }
               // create add sentence to the ccObj
               ccSentence = ccSentence.concat(" ").concat(word);
@@ -104,11 +101,11 @@ router.get("/loadTranscript/:id", (req, res) => {
               // finish ccObj
               ccObj["id"] = ccCounter;
               let timeStampstr =
-                trans[i]["alternatives"][0]["words"][j]["endTime"];
+              trans[i]["alternatives"][0]["words"][j]["endTime"];
               ccObj["endTime"] =
-                Number(
-                  timeStampstr.substring(timeStampstr, timeStampstr.length - 1)
-                ) + 0.0001;
+              Number(
+                timeStampstr.substring(timeStampstr, timeStampstr.length - 1)
+              ) + 0.0001;
               // push ccObj to ccComps array
               ccComps.push(ccObj);
               //change variables
@@ -118,21 +115,19 @@ router.get("/loadTranscript/:id", (req, res) => {
             } else {
               if (ccSentence.length == 0) {
                 let timeStampstr =
-                  trans[i]["alternatives"][0]["words"][j]["startTime"];
+                trans[i]["alternatives"][0]["words"][j]["startTime"];
                 ccObj["startTime"] =
-                  Number(
-                    timeStampstr.substring(
-                      timeStampstr,
-                      timeStampstr.length - 1
-                    )
-                  ) + 0.0001;
+                Number(
+                  timeStampstr.substring(
+                    timeStampstr,
+                    timeStampstr.length - 1
+                  )
+                ) + 0.0001;
               }
               ccSentence = ccSentence.concat(" ").concat(word);
             }
           }
         }
-        const millis = Date.now() - start;
-        console.log(`seconds elapsed = ${Math.floor(millis / 1000)}`);
         res.status(200).json({
           success: true,
           message: ccComps,
@@ -143,10 +138,7 @@ router.get("/loadTranscript/:id", (req, res) => {
       console.error(err);
       res.status(500).json(err);
     });
-});
+  });
 
-router.get("/test", (req, res) => {
-  console.log("WORKING");
-});
 
-export default router;
+  export default router;

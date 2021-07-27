@@ -8,6 +8,12 @@ const Episode = models.Episode;
 const UserEpisode = models.UserEpisode;
 const GcloudResponse = models.GcloudResponse;
 
+/*
+Note: All of these routes are admin use only except for loadUserEpisodes
+
+*/
+
+
 router.post("/createPodcast", (req, res) => {
   // create a new Pin with timestamp, text, User, and Podcast
   const newPodcast = new Podcast({
@@ -34,7 +40,6 @@ router.post("/createEpisode", (req, res) => {
   // create a new Pin with timestamp, text, User, and Podcast
   let podcastId = "";
   let transcript;
-  console.log("calling create episode")
   Podcast.findOne({
     title: req.body.podcast_title,
     author: req.body.podcast_author,
@@ -101,13 +106,14 @@ router.post("/addUserEpisode", (req, res) => {
     });
 });
 
+
+
+// ===== IMPORTANT ROUTE: render the episodes that a user has saved/downloaded
 router.get("/loadUserEpisodes/:userid", (req, res) => {
   User.findById(req.params.userid)
     .then((resp) => {
       UserEpisode.find({ _id: { $in: resp.episodes } })
         .then((resp2) => {
-          console.log(resp2);
-          console.log(resp2.length);
           let episodes = [];
           let podcasts = [];
           let progresses = [];
@@ -116,7 +122,6 @@ router.get("/loadUserEpisodes/:userid", (req, res) => {
             episodes.push(resp2[i].episode);
             progresses.push(resp2[i].progress);
           }
-          console.log(episodes);
           Episode.find({ _id: { $in: episodes } })
             .then((resp3) => {
               for (let i = 0; i < resp3.length; i++) {

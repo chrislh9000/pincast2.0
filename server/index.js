@@ -10,11 +10,9 @@ import LocalStrategy from "passport-local";
 import connectMongo from "connect-mongo";
 import models from "./models.js";
 const User = models.User;
-import dbRouter from "./routes/databaseAccess.js";
 import authRouter from "./routes/auth.js";
 import pinsRouter from "./routes/pins.js";
 import podcastRouter from "./routes/podcast.js";
-import cookiesRouter from "./routes/cookies.js";
 import transcriptRoutes from "./routes/transcript.js";
 import socialRouter from "./routes/social.js";
 import sha256 from "crypto-js/sha256";
@@ -62,7 +60,6 @@ app.use(
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use("/db", dbRouter);
 
 // ========== Passport =============
 function hashPassword(password) {
@@ -92,20 +89,13 @@ passport.deserializeUser(function (id, done) {
 
 passport.use(
   new LocalStrategy((username, password, done) => {
-    console.log("====USERNAME====", username);
-    console.log("====PASSWORD====", password);
-    console.log("====HASHED PASSWORD====", sha256(password).toString());
     User.findOne({ username: username })
       .then((user) => {
         if (!user) {
-          console.log("====NO USER FOUND=====");
           return done(null);
         } else if (user.password === sha256(password).toString()) {
-          console.log("====USER FOUND!!!!=====");
           return done(null, user);
         } else {
-          console.log("====NULL USER=====");
-          console.log("====ACTUAL USER=====", user);
           return done(null);
         }
       })
@@ -123,7 +113,6 @@ app.use("/podcasts", podcastRouter);
 app.use("/", authRouter(passport));
 app.use("/cloudinary", cloudinaryRoutes);
 app.use("/transcript", transcriptRoutes);
-app.use("/cookies", cookiesRouter);
 app.use("/pins", pinsRouter);
 app.use("/social", socialRouter);
 
