@@ -5,8 +5,6 @@ import { Route } from 'react-router';
  * Import all page components here
  */
 import App from './components/App';
-import MainPage from './components/MainPage';
-import PageTwo from './components/PageTwo';
 
 
 /**
@@ -15,7 +13,5 @@ import PageTwo from './components/PageTwo';
  */
 export default (
   <Route path="/" component={App}>
-    <Route component={MainPage} />
-    <Route path="/some/pagetwo" component={PageTwo} />
   </Route>
 );
