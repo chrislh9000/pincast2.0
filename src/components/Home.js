@@ -6,16 +6,10 @@ import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import PropTypes from "prop-types";
-import Selection from "react-ds";
 import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
-import FilterBar from "./FilterBar";
-import Button from "react-bootstrap/Button";
 import { Link, NavLink } from "react-router-dom";
-import { SlideDown } from "react-slidedown";
 import IconButton from "@material-ui/core/Button";
 
-import Truncate from "react-truncate";
 import PlayBar from "./PlayBar";
 import Listening from "./Listening";
 import SearchPage from "./SearchPage";
@@ -127,8 +121,6 @@ export default class Example extends React.PureComponent {
       })
         .then((res) => res.json())
         .then((json) => {
-          // console.log(json.episodes);
-          // console.log(json.podcasts);
           if (json.episodes) {
             this.setState(
               {
@@ -144,8 +136,6 @@ export default class Example extends React.PureComponent {
           }
           let promises = [];
           for (let i = 0; i < json.episodes.length; i++) {
-            // console.log(this.props.user._id);
-            // console.log(json.episodes[i]._id);
             promises.push(
               fetch(url2, {
                 method: "POST",
@@ -160,14 +150,12 @@ export default class Example extends React.PureComponent {
               })
             );
           }
-          // console.log(promises);
           Promise.all(promises).then((values) => {
             let pinsarray = [];
             for (let i = 0; i < json.episodes.length; i++) {
               pinsarray.push(values[i].json());
             }
             Promise.all(pinsarray).then((pinobjects) => {
-              // console.log("============pinobjects========", pinobjects);
               this.setState({
                 pins: pinobjects,
               });
@@ -179,12 +167,6 @@ export default class Example extends React.PureComponent {
         });
     }
     this.interval = setInterval(() => this.props.setCurrTime(), 1000);
-  };
-
-  componentDidUpdate = (e) => {
-    // console.log(this.props.episodeIndex);
-    // console.log(this.state.pins);
-    // console.log("=======proggresses========", this.state.progresses);
   };
 
   componentWillUnmount = (e) => {
@@ -235,12 +217,6 @@ export default class Example extends React.PureComponent {
                   style={{ marginLeft: "3%", marginTop: "2%", height: "30%" }}
                 >
                   <div style={{ width: "90%" }}>
-                    {/* <input
-                      type="text"
-                      className="input"
-                      onChange={this.handleChange}
-                      placeholder="Search..."
-                    /> */}
                     <SearchPage filterFunction={this.filterFunction} />
                   </div>
                 </Row>
@@ -301,7 +277,6 @@ export default class Example extends React.PureComponent {
                         <IconButton
                           className="pl-0 play_overlay"
                           style={{
-                            // minWidth: "0px",
                             outline: "none",
                             backgroundColor: "transparent",
                           }}
@@ -487,7 +462,6 @@ export default class Example extends React.PureComponent {
           handleSeekMouseUp={this.props.handleSeekMouseUp}
           episode={this.props.episode}
           podcast={this.props.podcast}
-          // testend
         ></PlayBar>
       </Container>
     );

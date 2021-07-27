@@ -42,12 +42,6 @@ class Listening extends React.Component {
       duration: 0,
       playbackRate: 1.0,
       loop: false,
-      // reflectPins: this.props.reflectPins,
-      // friendPins: [],
-      // seeFriends: false,
-      // shouldRenderPins: [],
-      // searchList: [],
-
       pins: [], // pinned objects
       mainComp: 0,
       windowWidth: window.innerWidth,
@@ -262,7 +256,6 @@ class Listening extends React.Component {
     var array = [...this.state.pins]; // make a separate copy of the array
     for (var i = 0; i < this.state.pins.length; i++) {
       if (this.state.pins[i]["startComp"] === pin_id) {
-        // console.log(i)
         index = i;
         break;
       }
@@ -575,14 +568,12 @@ class Listening extends React.Component {
             class="listening-middle"
             style={{
               marginLeft: "10%",
-              // marginRight: "14.286%",
               height: "100%",
             }}
           >
             <Row style={{}}>
               <Link to="/">
                 <IconButton
-                  //   onClick={() => this.props.handleSlide()}
                   style={{
                     outline: "none",
                     backgroundColor: "transparent",
@@ -657,28 +648,6 @@ class Listening extends React.Component {
                   maxHeight: "70vh",
                 }}
               >
-                {/* <p
-                  style={{
-                    fontFamily: "Avenir Light",
-                    fontSize: "18px",
-                    color: "#FFFFFF",
-                    marginLeft: "7%",
-                  }}
-                  className="mb-1"
-                >
-                  The Investor's Podcast
-                </p>
-                <p
-                  style={{
-                    fontFamily: "Avenir Heavy",
-                    fontSize: "24px",
-                    color: "white",
-                    marginLeft: "7%",
-                  }}
-                >
-                  Millenial Investing
-                </p> */}
-
                 <div
                   id="caption-col"
                   className="listening-captions"
@@ -729,30 +698,9 @@ class Listening extends React.Component {
                         );
                       })}
                     </SelectableGroup>
-
-                    {/* {this.state.showComponent ? (
-                      <HighlightMenu
-                        currPos={this.state.currPos}
-                        makeHighlight={this.makeHighlight}
-                        disableHighlight={this.disableSelection}
-                        style={{ height: "20px", width: "30px" }}
-                      />
-                    ) : null} */}
                   </ReactCursorPosition>
                 </div>
               </Col>
-              {/* <Col
-                className="pl-0 pr-0"
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  flex: "0.3",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <p>yo</p>
-              </Col> */}
               <div
                 style={{
                   flex: "1",
