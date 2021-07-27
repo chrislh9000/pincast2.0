@@ -171,9 +171,8 @@ class Listening extends React.Component {
       }
       if (this.state.cc_comps.length > 0 && selements.length > 0) {
         var startTime = this.state.cc_comps[selements[0]]["startTime"];
-        var endTime = this.state.cc_comps[selements[selements.length - 1]][
-          "endTime"
-        ];
+        var endTime =
+          this.state.cc_comps[selements[selements.length - 1]]["endTime"];
       }
 
       this.renderPin(startTime, endTime, selements, text, new Date());
@@ -316,7 +315,7 @@ class Listening extends React.Component {
   };
 
   handleMainComp = (comp_id) => {
-    console.log("HANDLE MAIN COMP BEING CALLED")
+    console.log("HANDLE MAIN COMP BEING CALLED");
     let timeStamp = this.state.cc_comps[comp_id]["startTime"];
     this.props.handlePin(timeStamp);
     this.setState({
@@ -325,7 +324,7 @@ class Listening extends React.Component {
   };
 
   handleScroll = (e) => {
-    console.log("HANDLE SCROLL IS BEING CALLED")
+    console.log("HANDLE SCROLL IS BEING CALLED");
     if (
       this.state.cc_comps[this.state.mainComp]["height"] &&
       this.state.cc_comps[this.state.mainComp + 1]["height"]
@@ -503,11 +502,14 @@ class Listening extends React.Component {
   };
 
   componentDidUpdate = (e) => {
-    console.log("COMPONENTDIDUPDATE BEING CALLED")
+    console.log("COMPONENTDIDUPDATE BEING CALLED");
     if (this.state.cc_comps) {
       if (this.state.mainComp < this.state.cc_comps.length - 1) {
         this.handleScroll();
-        console.log("START TIME OF SEGMENT: ", this.state.cc_comps[this.state.mainComp]["startTime"]);
+        console.log(
+          "START TIME OF SEGMENT: ",
+          this.state.cc_comps[this.state.mainComp]["startTime"]
+        );
       }
     }
   };
@@ -516,19 +518,6 @@ class Listening extends React.Component {
     window.addEventListener("resize", this.handleResize);
     clearInterval(this.interval);
     this.updateStorage();
-  };
-
-  handleSeekMouseDown = (e) => {
-    this.setState({ seeking: true });
-  };
-
-  handleSeekChange = (e) => {
-    this.setState({ played: parseFloat(e.target.value) });
-  };
-
-  handleSeekMouseUp = (e) => {
-    this.setState({ seeking: false });
-    // this.player.seekTo(parseFloat(e.target.value));
   };
 
   // ########################################################################################################
@@ -541,7 +530,10 @@ class Listening extends React.Component {
       .toString()
       .padStart(2, "0");
     secs = secs % 60;
-    let str = mins.toString().concat(":").concat(secs.toString().padStart(2, "0"));
+    let str = mins
+      .toString()
+      .concat(":")
+      .concat(secs.toString().padStart(2, "0"));
 
     if (mins == "NaN") {
       str = "00:00";
