@@ -475,17 +475,11 @@ export default class Example extends React.PureComponent {
           imgURL={this.props.imgURL}
           played={this.props.played}
           playing={this.props.playing}
-          light={this.props.light}
           volume={this.props.volume}
           muted={this.props.muted}
           loaded={this.props.loaded}
           duration={this.props.duration}
-          playbackRate={this.props.playbackRate}
-          loop={this.props.loop}
-          handlePlayPause={this.props.handlePlayPause}
           handleVolumeChange={this.props.handleVolumeChange}
-          handlePlay={this.props.handlePlay}
-          handlePause={this.props.handlePause}
           handleDuration={this.props.handleDuration}
           handleSeekTo={this.props.handleSeekTo}
           handleSeekChange={this.props.handleSeekChange}

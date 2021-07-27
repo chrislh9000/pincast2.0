@@ -40,19 +40,12 @@ class App extends React.Component {
       episodeIndex: 0,
       podcast: {},
       played: 0,
-      light: false,
       volume: 0.8,
       muted: false,
       loaded: 0,
       duration: 0,
-      playbackRate: 1.0,
-      loop: false,
     };
   }
-
-  handlePlayPause = () => {
-    this.setState({ playpause: !this.state.playpause });
-  };
 
   handleVolumeChange = (e) => {
     this.setState({ volume: parseFloat(e.target.value) });
@@ -308,7 +301,6 @@ class App extends React.Component {
 
   fastRewind = (e) => {
     e.stopPropagation();
-    // this.player.seekTo(parseFloat(this.player.getCurrentTime() - 10))
     var time = this.player.getCurrentTime();
     if (time < 10) {
       time = 1;
@@ -320,20 +312,17 @@ class App extends React.Component {
 
   fastForward = (e) => {
     e.stopPropagation();
-    // this.player.seekTo(parseFloat(this.player.getCurrentTime() + 10))
     var time = this.player.getCurrentTime() + 10;
     var duration = this.player.getDuration();
     if (time > duration) {
       time = duration;
     }
-    // this.props.handleWind(time)
     this.seekToTime(time);
   };
 
   seekToTime = (time) => {
     if (this.state.pinTime > 0) {
       console.log("SEEK TO TIME BEING CALLED!!! at time", time);
-      // this.setState({ pinTime: time });
       this.player.seekTo(time, "seconds");
       console.log(
         "SEEK TO TIME BEING CALLED!!!",
@@ -352,7 +341,6 @@ class App extends React.Component {
     this.setState({
       pinTime: pin,
     });
-    // console.log("we in apps.js", this.state.pinTime)
   };
 
   /*
@@ -501,17 +489,11 @@ it updates episode-specific state elements passed into the discussion component
               handleSlide={this.handleSlide}
               played={this.state.played}
               episode={this.state.episode}
-              light={this.state.light}
               volume={this.state.volume}
               muted={this.state.muted}
               loaded={this.state.loaded}
               duration={this.state.duration}
-              playbackRate={this.state.playbackRate}
-              loop={this.state.loop}
-              handlePlayPause={this.handlePlayPause}
               handleVolumeChange={this.handleVolumeChange}
-              handlePlay={this.handlePlay}
-              handlePause={this.handlePause}
               handleDuration={this.handleDuration}
               handleSeekTo={this.handleSeekTo}
               handleSeekChange={this.handleSeekChange}
